@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /add-product.html
+
+Sitemap: https://litfans.pl/sitemap.xml

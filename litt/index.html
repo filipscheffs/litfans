@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Litfans — katalog streetwear itemów, fit generator i szybkie linki do produktów.">
+    <meta name="theme-color" content="#ffcc00">
+    <meta property="og:title" content="Litfans">
+    <meta property="og:description" content="Katalog streetwear itemów, fit generator i szybkie linki do produktów.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="logo.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Litfans">
+    <meta name="twitter:description" content="Katalog streetwear itemów, fit generator i szybkie linki do produktów.">
+    <meta name="twitter:image" content="logo.png">
+    <title>Litfans</title>
+    <link rel="icon" href="logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div id="background-image"></div>
+
+    <div id="selection-screen">
+        <div class="select-box">
+            <div class="select-hero">
+                <div class="select-logo-wrap">
+                    <img src="logo.png" class="select-logo" alt="LITFANS">
+                </div>
+                <button class="coupon-hero-btn" onclick="openCoupons()">30% na ship przy rejestracji!</button>
+            </div>
+            <div class="start-action">
+                <div class="start-gender-split">
+                    <button class="start-gender-choice start-gender-man" onclick="setGender('men'); startApp()">MAN</button>
+                    <button class="start-gender-choice start-gender-woman" onclick="setGender('woman'); startApp()">WOMAN</button>
+                </div>
+            </div>
+        </div>
+    </div> 
+
+    <div id="main-content">
+        <div class="overlay-bg" id="overlay" onclick="toggleMenu()"></div>
+        <div class="toast" id="toast"></div>
+
+        <div class="sidebar" id="sidebar">
+            <div style="margin-bottom: 26px;" onclick="showAll()">
+                <img src="logo.png" class="sidebar-logo" id="sidebarLogo" alt="LITFANS">
+            </div>
+            <div class="gender-switch" role="group" aria-label="Wybierz płeć">
+                <button class="gender-btn active" id="genderMenBtn" onclick="setGender('men')">MEN</button>
+                <button class="gender-btn" id="genderWomanBtn" onclick="setGender('woman')">WOMAN</button>
+            </div>
+            <button class="mobile-sidebar-fit-btn" onclick="openFitGenerator(); closeMenuIfOpen();">FIT GENERATOR</button>
+            <button class="mobile-sidebar-how-btn" onclick="openHowToOrder(); closeMenuIfOpen();">JAK ZAMAWIAĆ</button>
+            <h3 style="font-size: 11px; opacity: 0.5; margin: 20px 0 10px; letter-spacing: 1px;">KATEGORIE</h3>
+            <div id="categoryList"></div>
+            <h3 style="font-size: 11px; opacity: 0.5; margin: 20px 0 10px; letter-spacing: 1px;">MARKI</h3>
+            <div id="brandList"></div>
+        </div>
+
+        <header>
+            <div class="header-main" style="display: flex; align-items: center; gap: 15px;">
+                <div style="cursor:pointer; color:var(--primary); font-size:28px;" onclick="toggleMenu()">☰</div>
+                <img src="logo.png" class="logo-img" id="headerLogo" alt="LOGO" onclick="showAll()">
+            </div>
+            
+            <div class="header-actions" style="display: flex; align-items: center; gap: 12px;">
+                <a class="coupon-top-btn" href="https://litbuy.com/register?inviteCode=YYCONHQLC" target="_blank" rel="noopener noreferrer" style="background: var(--primary); color: #000; padding: 7px 12px; border-radius: 6px; font-weight: 800; font-size: 11px;">30% SHIP</a>
+                <button class="how-order-btn" data-mobile-label="JAK?" onclick="openHowToOrder()">JAK ZAMAWIAĆ</button>
+                <button class="fit-generator-btn" data-mobile-label="FIT" onclick="openFitGenerator()">FIT GENERATOR</button>
+                <select id="currencySelector" onchange="changeCurrency()" style="background: transparent; border: 1px solid var(--primary); color: var(--primary); padding: 5px; border-radius: 5px; font-weight: 800; cursor: pointer;">
+                    <option value="USD">USD</option>
+                    <option value="PLN">PLN</option>
+                    <option value="CNY">CNY</option>
+                </select>
+                <button onclick="filterFavorites()" style="background: rgba(255,204,0,0.1); border: 1px solid var(--primary); color: var(--primary); width: 38px; height: 38px; border-radius: 50%; cursor: pointer; position: relative;">
+                    ★ <span id="fav-count" style="position: absolute; top: -5px; right: -5px; background: #fff; color: #000; font-size: 10px; width: 18px; height: 18px; border-radius: 50%; font-weight: 900; display: flex; align-items: center; justify-content: center;">0</span>
+                </button>
+            </div>
+        </header>
+
+        <div style="padding: 25px 5% 5px;">
+            <h1 id="pageTitle" style="font-weight: 900; letter-spacing: 1px; text-shadow: 2px 2px 10px #000; color: var(--primary); text-transform: uppercase;">WSZYSTKO</h1>
+        </div>
+
+        <main class="grid-container" id="productGrid"></main>
+        <div class="pagination" id="pagination"></div>
+        <div class="how-order-modal" id="howOrderModal" onclick="closeHowToOrder(event)">
+            <div class="how-order-panel">
+                <button class="how-order-close" onclick="closeHowToOrder()">×</button>
+                <div class="how-order-head">
+                    <span class="how-order-eyebrow">PORADNIK</span>
+                    <h2>Jak zamawiać?</h2>
+                    <p>Krótko i prosto — wybierz itemy, zamów je na LitBuy i poczekaj aż paczka będzie gotowa do wysyłki.</p>
+                </div>
+                <div class="how-order-steps">
+                    <div class="how-order-step">
+                        <span>1</span>
+                        <div>
+                            <h3>Przejrzyj naszą stronkę</h3>
+                            <p>Wybierz rzeczy dla siebie z kategorii MEN albo WOMAN i kliknij item, który Ci się podoba.</p>
+                        </div>
+                    </div>
+                    <div class="how-order-step">
+                        <span>2</span>
+                        <div>
+                            <h3>Załóż konto przez link</h3>
+                            <p>Jeśli nie masz konta, zarejestruj się przez nasz link, żeby zgarnąć 30% zniżki na ship.</p>
+                            <button onclick="openCoupons()">Odbierz 30% na ship</button>
+                        </div>
+                    </div>
+                    <div class="how-order-step">
+                        <span>3</span>
+                        <div>
+                            <h3>Dodaj itemy do koszyka</h3>
+                            <p>Jeśli masz już konto, kliknij wybrany produkt, dodaj go do koszyka na LitBuy i złóż zamówienie.</p>
+                        </div>
+                    </div>
+                    <div class="how-order-step">
+                        <span>4</span>
+                        <div>
+                            <h3>Poczekaj na Quality Check</h3>
+                            <p>LitBuy sprawdzi produkty, zrobi QC i pokaże Ci zdjęcia itemów przed wysyłką.</p>
+                        </div>
+                    </div>
+                    <div class="how-order-step">
+                        <span>5</span>
+                        <div>
+                            <h3>Wyślij paczkę do siebie</h3>
+                            <p>Gdy wszystkie itemy dotrą do warehouse, wybierz wysyłkę, opłać paczkę i czekaj na dostawę. Najbezpieczniejszą opcją wysyłki jest DHL.</p>
+                        </div>
+                    </div>
+                    <div class="how-order-step">
+                        <span>6</span>
+                        <div>
+                            <h3>Gotowe, masz itemy</h3>
+                            <p>Odbierasz paczkę, sprawdzasz fit i cieszysz się nowymi rzeczami.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="fit-generator-modal" id="fitGeneratorModal" onclick="closeFitGenerator(event)">
+            <div class="fit-generator-panel">
+                <button class="fit-generator-close" onclick="closeFitGenerator()">×</button>
+                <div class="fit-generator-head">
+                    <span class="fit-generator-eyebrow">STYLE BUILDER</span>
+                    <h2>Fit Generator</h2>
+                    <p>Kliknij raz i zobacz gotowy outfit z losowych itemów dostępnych na stronie.</p>
+                </div>
+                <button class="fit-roll-btn" onclick="generateFit()">WYGENERUJ CAŁY FIT</button>
+                <div class="fit-result" id="fitResult"></div>
+            </div>
+        </div>
+    </div>
+    <script src="products-catalog.js" defer></script>
+    <script src="app.js" defer></script>
+</body>
+</html>
